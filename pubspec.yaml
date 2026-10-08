@@ -139,3 +139,6 @@ flutter:
     - assets/
     - assets/binaries/
     - assets/avatars/
+
+dependency_overrides:
+  intl: ^0.20.3
