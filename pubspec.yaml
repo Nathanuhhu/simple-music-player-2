@@ -115,10 +115,6 @@ dev_dependencies:
   # Icon Generator
   flutter_launcher_icons: ^0.13.1
 
-dependency_overrides:
-  # Pin flutter_rust_bridge to 2.11.1 to match smtc_windows and flutter_discord_rpc codegen
-  flutter_rust_bridge: 2.11.1
-
 flutter_launcher_icons:
   android: true
   ios: true
@@ -140,5 +136,7 @@ flutter:
     - assets/binaries/
     - assets/avatars/
 
-dependency_overrides:
-  intl: ^0.20.3
+  dependency_overrides:
+  # Pin flutter_rust_bridge to 2.11.1 to match smtc_windows and flutter_discord_rpc codegen
+  flutter_rust_bridge: 2.11.1
+  intl :^0.20.3
