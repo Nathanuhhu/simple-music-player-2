@@ -106,6 +106,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  
+  dependency_overrides:
+  # Pin flutter_rust_bridge to 2.11.1 to match smtc_windows and flutter_discord_rpc codegen
+  flutter_rust_bridge: 2.11.1
 
   # Isar Database
   build_runner: ^2.4.13       # Runs the code generator
@@ -135,7 +139,3 @@ flutter:
     - assets/
     - assets/binaries/
     - assets/avatars/
-
-  dependency_overrides:
-  # Pin flutter_rust_bridge to 2.11.1 to match smtc_windows and flutter_discord_rpc codegen
-  flutter_rust_bridge: 2.11.1
