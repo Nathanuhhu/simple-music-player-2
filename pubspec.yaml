@@ -108,10 +108,9 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   
 dependency_overrides:
-  file_selector: 1.0.3
-  # Pin flutter_rust_bridge to 2.11.1 to match smtc_windows and flutter_discord_rpc codegen
+  intl: any
   flutter_rust_bridge: 2.11.1
-
+  
   # Isar Database
   build_runner: ^2.4.13       # Runs the code generator
   isar_generator: ^3.1.0+1    # Generates the database code
