@@ -23,26 +23,39 @@ jobs:
       - name: Get Dependencies
         run: flutter pub get
 
-      - name: Force Ios 14.0 Deployement Target
+      - name: Patch Generated Podfile & Build iOS
         run: |
+          # 1. Trigger initial pod setup to generate the default Podfile
           cd ios
           pod init || true
-          sed -i '' "s/# platform :ios, '9.0'/platform :ios, '14.0'/g" Podfile || true
-          sed -i '' "s/# platform :ios, '12.0'/platform :ios, '14.0'/g" Podfile || true
-          sed -i '' "s/# platform :ios, '13.0'/platform :ios, '14.0'/g" Podfile || true
-          echo "post_install do |installer|" >> Podfile
-          echo "  installer.pods_project.targets.each do |target|" >> Podfile
-          echo "    flutter_additional_ios_build_settings(target)" >> Podfile
-          echo "    target.build_configurations.each do |config|" >> Podfile
-          echo "      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'" >> Podfile
-          echo "    end" >> Podfile
-          echo "  end" >> Podfile
-          echo "end" >> Podfile
+          
+          # 2. Overwrite Podfile with a clean, unified setup targeting iOS 14.0
+          cat << 'EOF' > Podfile
+          platform :ios, '14.0'
+
+          target 'Runner' do
+            use_frameworks!
+            use_modular_headers!
+
+            flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+          end
+
+          post_install do |installer|
+            installer.pods_project.targets.each do |target|
+              flutter_additional_ios_build_settings(target)
+              target.build_configurations.each do |config|
+                config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+              end
+            end
+          end
+          EOF
+
+          # 3. Install Pods and return to root directory
           pod install --repo-update
-      
-      - name: Build iOS (No Codesign)
-        run: |
-          flutter build ios --release --no-codesign
+          cd ..
+
+      - name: Build iOS App
+        run: flutter build ios --release --no-codesign
       
       - name: Create IPA
         run: |
