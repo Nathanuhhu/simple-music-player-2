@@ -38,20 +38,29 @@ jobs:
           pod install --repo-update
           cd ..
 
-      - name: Build iOS App
-        run: flutter build ios --release --no-codesign
-      
-      - name: Create IPA
+      - name: Build Unsigned App with xcodebuild
         run: |
-          # Create Payload directory
+          # 1. Generate Flutter build assets and configuration without building the final binary
+          flutter build ios --release --no-codesign --config-only
+
+          # 2. Build the app bundle directly using xcodebuild to bypass Development Team requirements
+          xcodebuild -workspace ios/Runner.xcworkspace \
+                     -scheme Runner \
+                     -configuration Release \
+                     -sdk iphoneos \
+                     -derivedDataPath build/ios_derived \
+                     CODE_SIGNING_ALLOWED=NO \
+                     CODE_SIGNING_REQUIRED=NO \
+                     CODE_SIGN_IDENTITY="" \
+                     AD_HOC_CODE_SIGNING_ALLOWED=YES \
+                     build
+
+      - name: Create IPA Package
+        run: |
           mkdir -p Payload
-          
-          # Copy .app bundle
-          cp -r build/ios/iphoneos/Runner.app Payload/
-          
-          # Create IPA (zip)
+          cp -r build/ios_derived/Build/Products/Release-iphoneos/Runner.app Payload/
           zip -r Simple.Music.Player.ipa Payload
-          
+               
       - name: Get Version
         id: version
         run: |
