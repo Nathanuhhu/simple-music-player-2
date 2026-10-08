@@ -20,8 +20,12 @@ jobs:
         with:
           channel: 'stable'
       
-      - name: Get Dependencies
-        run: flutter pub get
+      - name: Patch Dependencies & Get Packages
+        run: |
+          echo "" >> pubspec.yaml
+          echo "dependency_overrides:" >> pubspec.yaml
+          echo "  intl: ^0.20.3" >> pubspec.yaml
+          flutter pub get
 
       - name: Force Ios 14.0 Deployement Target
         run: |
