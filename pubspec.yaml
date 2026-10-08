@@ -139,4 +139,3 @@ flutter:
   dependency_overrides:
   # Pin flutter_rust_bridge to 2.11.1 to match smtc_windows and flutter_discord_rpc codegen
   flutter_rust_bridge: 2.11.1
-  intl :^0.20.3
