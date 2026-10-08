@@ -40,10 +40,10 @@ jobs:
 
       - name: Build Unsigned App with xcodebuild
         run: |
-          # 1. Generate Flutter build assets and configuration without building the final binary
-          flutter build ios --release --no-codesign --config-only
+          # 1. Compile Flutter Dart AOT code & assemble iOS framework assets
+          flutter build ios --release --no-codesign --script-only
 
-          # 2. Build the app bundle directly using xcodebuild to bypass Development Team requirements
+          # 2. Compile native iOS binary using xcodebuild while ignoring code signing
           xcodebuild -workspace ios/Runner.xcworkspace \
                      -scheme Runner \
                      -configuration Release \
@@ -53,6 +53,7 @@ jobs:
                      CODE_SIGNING_REQUIRED=NO \
                      CODE_SIGN_IDENTITY="" \
                      AD_HOC_CODE_SIGNING_ALLOWED=YES \
+                     COMPILER_INDEX_STORE_ENABLE=NO \
                      build
 
       - name: Create IPA Package
