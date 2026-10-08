@@ -107,7 +107,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
   
-  dependency_overrides:
+dependency_overrides:
   # Pin flutter_rust_bridge to 2.11.1 to match smtc_windows and flutter_discord_rpc codegen
   flutter_rust_bridge: 2.11.1
 
