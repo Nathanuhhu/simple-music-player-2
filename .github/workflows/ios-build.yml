@@ -14,6 +14,49 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Generate Env Stub
+        run: |
+          mkdir -p lib/env
+          cat << 'EOF' > lib/env/env.g.dart
+          // GENERATED CODE - DO NOT MODIFY BY HAND
+          part of 'env.dart';
+
+          class _Env {
+            static const String spotifyClientId = '';
+            static const String spotifyClientSecret = '';
+            static const String spotifyClientId2 = '';
+            static const String spotifyClientSecret2 = '';
+            static const String discordAppId = '';
+            static const String firebaseApiKey = '';
+            static const String firebaseAuthDomain = '';
+            static const String firebaseProjectId = '';
+            static const String firebaseStorageBucket = '';
+            static const String firebaseMessagingSenderId = '';
+            static const String firebaseAppIdWindows = '';
+            static const String firebaseAppIdAndroid = '';
+            static const String firebaseAppIdIos = '';
+            static const String firebaseAppIdMacos = '';
+            static const String firebaseMeasurementId = '';
+            static const String pocketbaseUrl = '';
+            static const String pocketbaseAdminEmail = '';
+            static const String pocketbaseAdminPassword = '';
+            static const String qobuzAppId = '';
+            static const String remoteControlUrl = '';
+            static const String romajiApiUrl = '';
+            static const String tidalApiKey = '';
+            static const String tidalApiUrl = '';
+            static const String spotifyBannerUrl = '';
+            static const String appleMusicApiUrl = '';
+            static const String aiLyricsApiUrl = '';
+            static const String acoustidApiKey = '';
+            static const String vpsScraperUrl = '';
+            static const String alacStreamUrl = '';
+            static const String externalLyricsUrl = '';
+            static const String purgeCachePath = '';
+            static const String ytMusicApiUrl = '';
+          }
+          EOF
       
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -43,10 +86,10 @@ jobs:
 
       - name: Build Unsigned App with xcodebuild
         run: |
-          # 1. Prepare Flutter build configurations
-          flutter build ios --release --no-codesign --config-only
+          # 1. Pre-build Flutter release frameworks (ignore signing errors here)
+          flutter build ios --release --no-codesign || true
 
-          # 2. Build native iOS app bundle using xcodebuild
+          # 2. Compile native iOS executable using xcodebuild
           xcodebuild -workspace ios/Runner.xcworkspace \
                      -scheme Runner \
                      -configuration Release \
