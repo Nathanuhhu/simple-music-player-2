@@ -23,34 +23,18 @@ jobs:
       - name: Get Dependencies
         run: flutter pub get
 
-      - name: Patch Generated Podfile & Build iOS
+      - name: Generate Official Flutter Podfile & Patch Target
         run: |
-          # 1. Trigger initial pod setup to generate the default Podfile
-          cd ios
-          pod init || true
+          # 1. Let Flutter generate its official, fully-loaded Podfile
+          flutter build ios --config-only --no-codesign
           
-          # 2. Overwrite Podfile with a clean, unified setup targeting iOS 14.0
-          cat << 'EOF' > Podfile
-          platform :ios, '14.0'
-
-          target 'Runner' do
-            use_frameworks!
-            use_modular_headers!
-
-            flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-          end
-
-          post_install do |installer|
-            installer.pods_project.targets.each do |target|
-              flutter_additional_ios_build_settings(target)
-              target.build_configurations.each do |config|
-                config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
-              end
-            end
-          end
-          EOF
-
-          # 3. Install Pods and return to root directory
+          # 2. Patch platform target to 14.0 in-place inside ios/Podfile
+          cd ios
+          sed -i '' "s/platform :ios, '11.0'/platform :ios, '14.0'/g" Podfile || true
+          sed -i '' "s/platform :ios, '12.0'/platform :ios, '14.0'/g" Podfile || true
+          sed -i '' "s/# platform :ios, '12.0'/platform :ios, '14.0'/g" Podfile || true
+          
+          # 3. Update pods
           pod install --repo-update
           cd ..
 
